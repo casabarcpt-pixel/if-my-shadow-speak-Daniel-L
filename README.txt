@@ -1,5 +1,5 @@
-UPDATED PREVIEW FONT VERSION
-- preview.jpg now uses the actual cover title lettering/crop, so the WhatsApp preview matches the cover more closely.
-- Cover page still opens on its own first.
-- Upload/replace index.html and preview.jpg on GitHub.
-- Then send: https://casabarcpt-pixel.github.io/if-my-shadow-speak-Daniel-L/?v=30
+DEDICATION PREVIEW VERSION
+- Updated preview.jpg with dedication text:
+  "I dedicate this graphic novel to my Missus, The Cedars, and AA — without their support and recovery, I may never have discovered my creativity."
+- Upload/replace only index.html and preview.jpg on GitHub.
+- Then test with: https://casabarcpt-pixel.github.io/if-my-shadow-speak-Daniel-L/?v=50
