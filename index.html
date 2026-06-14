@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>If My Shadow Speaks - Flipbook</title>
+<style>
+  :root {
+    --page-w: min(42vw, 520px);
+    --page-h: calc(var(--page-w) * 1.4140625);
+    --bg: #2b2b2b;
+    --paper: #f8f8f5;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Arial, Helvetica, sans-serif; background: radial-gradient(circle at 50% 10%, #555, var(--bg) 55%, #151515); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; display:flex; justify-content:space-between; align-items:center; padding:18px 28px; letter-spacing:0.08em; }
+  header .title { font-size:18px; font-weight:700; }
+  header .small { opacity:.65; font-size:12px; margin-left:10px; font-weight:400; }
+  .wrap { display:flex; flex-direction:column; align-items:center; gap:16px; width:100%; }
+  .stage { display:flex; align-items:center; justify-content:center; gap:26px; width:100%; padding:8px 20px 0; }
+  button { border:0; background:rgba(255,255,255,.12); color:white; border-radius:999px; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.25); }
+  button:hover { background:rgba(255,255,255,.22); }
+  .nav { width:52px; height:52px; font-size:34px; line-height:1; }
+  .book {
+    position:relative;
+    width:calc(var(--page-w) * 2);
+    height:var(--page-h);
+    perspective:2400px;
+    filter:drop-shadow(0 20px 25px rgba(0,0,0,.45));
+    transition: width .55s ease;
+  }
+  .book.cover-mode { width:var(--page-w); }
+  .left-stack, .right-stack {
+    position:absolute; top:0; width:var(--page-w); height:var(--page-h);
+    background:var(--paper); border-radius:4px; overflow:hidden;
+    transition: opacity .35s ease;
+  }
+  .left-stack { left:0; transform:translateX(0); box-shadow: inset -14px 0 24px rgba(0,0,0,.14); }
+  .right-stack { right:0; box-shadow: inset 14px 0 24px rgba(0,0,0,.10); }
+  .book.cover-mode .left-stack,
+  .book.cover-mode .gutter { opacity:0; pointer-events:none; }
+  .gutter {
+    position:absolute; left:calc(var(--page-w) - 2px); top:0; height:100%; width:12px; z-index:50;
+    background:linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.25), rgba(0,0,0,.18));
+    opacity:.55; pointer-events:none; transition: opacity .35s ease;
+  }
+  .sheet { position:absolute; right:0; top:0; width:var(--page-w); height:var(--page-h); transform-origin:left center; transform-style:preserve-3d; transition:transform .9s cubic-bezier(.25,.65,.16,1); z-index:1; }
+  .sheet.flipped { transform: rotateY(-180deg); }
+  .face { position:absolute; inset:0; backface-visibility:hidden; background:var(--paper); overflow:hidden; border-radius:4px; }
+  .front { box-shadow: inset 14px 0 22px rgba(0,0,0,.12); }
+  .back { transform:rotateY(180deg); box-shadow: inset -14px 0 22px rgba(0,0,0,.14); }
+  .face img, .left-stack img, .right-stack img { width:100%; height:100%; object-fit:cover; display:block; }
+  .page-corner { position:absolute; right:0; bottom:0; width:20%; height:20%; background:linear-gradient(135deg, rgba(255,255,255,0) 48%, rgba(255,255,255,.9) 50%, rgba(0,0,0,.20) 100%); opacity:.85; pointer-events:none; }
+  .sheet:not(.flipped):last-of-type .page-corner { display:none; }
+  .controls { display:flex; align-items:center; gap:18px; margin-top:6px; }
+  .pill { padding:9px 16px; background:rgba(0,0,0,.38); border-radius:999px; font-size:14px; min-width:128px; text-align:center; }
+  .thumbs { width:min(1180px,94vw); display:flex; gap:12px; overflow:auto; background:rgba(255,255,255,.10); padding:12px; border-radius:16px; margin:12px 0 24px; }
+  .thumb { flex:0 0 auto; width:92px; opacity:.75; border:2px solid transparent; border-radius:6px; overflow:hidden; background:#eee; cursor:pointer; }
+  .thumb.active { border-color:#87a3ff; opacity:1; box-shadow:0 0 0 2px rgba(135,163,255,.25); }
+  .thumb img { width:100%; aspect-ratio:1024/1448; object-fit:cover; display:block; }
+  .thumb span { display:block; color:#fff; background:rgba(0,0,0,.65); text-align:center; font-size:11px; padding:4px 2px; }
+  .note { color:rgba(255,255,255,.72); font-size:12px; margin-top:-8px; }
+  @media (max-width: 900px) { :root { --page-w: 45vw; } .stage { gap:8px; } .nav { width:42px;height:42px;font-size:26px; } header { padding:12px 16px; } }
+</style>
+</head>
+<body>
+<header><div><span class="title">IF MY SHADOW SPEAK</span><span class="small">cover opens first, then the flipbook</span></div><div class="small">Cover + pages 1-14</div></header>
+<div class="wrap">
+  <div class="stage">
+    <button class="nav" onclick="prevPage()" aria-label="Previous page">‹</button>
+    <div class="book cover-mode" id="book">
+      <div class="left-stack" id="leftBase"></div>
+      <div class="right-stack" id="rightBase"></div>
+      <div class="gutter"></div>
+    </div>
+    <button class="nav" onclick="nextPage()" aria-label="Next page">›</button>
+  </div>
+  <div class="controls"><button onclick="prevPage()" style="padding:9px 16px;">Back</button><div class="pill" id="counter">Cover / 14</div><button onclick="nextPage()" id="nextBtn" style="padding:9px 16px;">Open Book</button></div>
+  <div class="note">The cover now opens on its own first. When you flip, it transitions into the full book spread view.</div>
+  <div class="thumbs" id="thumbs"></div>
+</div>
+<script>
+const images = ["pages/00.jpg", "pages/01.jpg", "pages/02.jpg", "pages/03.jpg", "pages/04.jpg", "pages/05.jpg", "pages/06.jpg", "pages/07.jpg", "pages/08.jpg", "pages/09.jpg", "pages/10.jpg", "pages/11.jpg", "pages/12.jpg", "pages/13.jpg", "pages/14.jpg", "pages/15.jpg"];
+const sheets = [];
+for (let i=0; i<images.length; i+=2) { sheets.push([images[i], images[i+1] || 'pages/15.jpg']); }
+let current = 0;
+const book = document.getElementById('book');
+const thumbs = document.getElementById('thumbs');
+const nextBtn = document.getElementById('nextBtn');
+function build() {
+  sheets.forEach((s, idx) => {
+    const el = document.createElement('div');
+    el.className = 'sheet';
+    el.style.zIndex = sheets.length - idx;
+    el.dataset.idx = idx;
+    el.innerHTML = `<div class="face front"><img src="${s[0]}"><div class="page-corner"></div></div><div class="face back"><img src="${s[1]}"></div>`;
+    el.addEventListener('click', () => { if(idx === current) nextPage(); });
+    book.appendChild(el);
+  });
+  images.slice(0,15).forEach((src, i) => {
+    const t=document.createElement('div'); t.className='thumb'; t.dataset.i=i;
+    t.innerHTML=`<img src="${src}"><span>${i===0?'Cover':'Page '+i}</span>`;
+    t.onclick=()=>goToPage(i);
+    thumbs.appendChild(t);
+  });
+  update();
+}
+function update() {
+  book.classList.toggle('cover-mode', current === 0);
+  document.querySelectorAll('.sheet').forEach((el,idx)=>{
+    el.classList.toggle('flipped', idx < current);
+    el.style.zIndex = idx < current ? idx + 1 : sheets.length - idx;
+  });
+  const spreadText = current===0 ? 'Cover / 14' : `Pages ${current*2-1}-${Math.min(current*2,14)} / 14`;
+  document.getElementById('counter').textContent = spreadText;
+  nextBtn.textContent = current===0 ? 'Open Book' : 'Flip';
+  [...thumbs.children].forEach((t,i)=> t.classList.toggle('active', (current===0 && i===0) || (current>0 && (i===current*2-1 || i===current*2))));
+}
+function nextPage() { if(current < sheets.length-1) { current++; update(); } }
+function prevPage() { if(current > 0) { current--; update(); } }
+function goToPage(i) { current = i===0 ? 0 : Math.ceil(i/2); update(); }
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') nextPage(); if(e.key==='ArrowLeft') prevPage(); });
+build();
+</script>
+</body>
+</html>
