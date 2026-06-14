@@ -1,13 +1,5 @@
-UPDATED LINK PREVIEW VERSION
-- Cover page opens on its own first (no blank white left page)
-- Added preview.jpg for WhatsApp/social preview
-- Added Open Graph metadata in index.html
-
-UPLOAD THESE FILES TO GITHUB:
-index.html
-preview.jpg
-pages folder
-README.txt
-
-After upload, wait a few minutes and send:
-https://casabarcpt-pixel.github.io/if-my-shadow-speak-Daniel-L/?v=2
+UPDATED PREVIEW FONT VERSION
+- preview.jpg now uses the actual cover title lettering/crop, so the WhatsApp preview matches the cover more closely.
+- Cover page still opens on its own first.
+- Upload/replace index.html and preview.jpg on GitHub.
+- Then send: https://casabarcpt-pixel.github.io/if-my-shadow-speak-Daniel-L/?v=30
